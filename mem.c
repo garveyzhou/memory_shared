@@ -10,33 +10,32 @@ int main(int argc, char * argv[]){
   key_t key ;
   int shmid;
   char * shared;
-  if ((key = ftok("mem.c",'R')) == -1){
-      perror("ftok");
-      exit(1);
-  }
-
-  if((schmid = shmget(key,SHM_SIZE,0644 | IPC_CREAT)) == -1){
-    perror("schmget");
-    exit(1);
-  }
-
+  char command[200];
+  key = ftok("./mem.c",'R');
+  shmid = shmget(key,SHM_SIZE,0644 | IPC_CREAT);
   shared = shmat(shmid,(void *)0,0);
-  if(shared == (char *) -1){
-    perror("schmat");
-    exit(1);
-  }
   
   printf("This is the shared memory %s \n",shared);
-  printf("Do you want to change the data?(Y or N) ");
-  char command[200];
-  fgets(command,1,stdin);
-  if(!strcmp(command[0],"Y")){
-      printf("Enter your change: ");
-      fgets(command,200,stdin);
-      
+  printf("Do you want to change the data?(y or n):");
+  fgets(command,200,stdin);
+  printf("\n");
+  if(command[0] == 'y'){
+    printf("\n Enter your change: ");
+    fgets(command,200,stdin);
+    command[strlen(command) - 1] = 0;
+    strcpy(shared,command);
   }
+  printf("Do you want to delete this shared memory?(y or n)");
+  fgets(command,200,stdin);
+  printf("\n");
+  if(command[0] == 'y'){
+    shmdt(shared);
+    shmctl(shmid, IPC_RMID,NULL);
+  }
+
+  return 0;
   
-}
+  }
   
  
   
