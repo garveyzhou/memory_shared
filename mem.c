@@ -18,19 +18,18 @@ int main(int argc, char * argv[]){
   printf("This is the shared memory %s \n",shared);
   printf("Do you want to change the data?(y or n):");
   fgets(command,200,stdin);
-  printf("\n");
   if(command[0] == 'y'){
-    printf("\n Enter your change: ");
+    printf("Enter your change: ");
     fgets(command,200,stdin);
-    command[strlen(command) - 1] = 0;
+    command[strlen(command) - 1] = '\0';
     strcpy(shared,command);
   }
   printf("Do you want to delete this shared memory?(y or n)");
   fgets(command,200,stdin);
-  printf("\n");
   if(command[0] == 'y'){
     shmdt(shared);
     shmctl(shmid, IPC_RMID,NULL);
+    printf("deleted");
   }
 
   return 0;
